@@ -1,0 +1,30 @@
+
+.main_page_header{
+    width: fit-content;
+    margin: auto;
+  }
+
+.main_page_navbar{
+    display: flex;
+    background-color: #0033CC;
+    min-height: 6vh;
+    align-content: center;
+}
+
+.main_page_banner{
+    display: flex;
+}
+
+.main_page_navbar_link_list{
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+.main_page_navbar_link_list a{
+    text-decoration: none;
+    text-transform: uppercase;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+}
