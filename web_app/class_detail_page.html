@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style/page_header.css">
+    <link rel="stylesheet" href="style/class_detail_content.css">
+    <link rel="stylesheet" href="style/grid_table.css">
 </head>
 <body>
     <div class="page_header" id="main_page_header">
@@ -13,9 +15,45 @@
         <ul class="page_navbar_link_list">
             <li><a href="main_page.html">thời khóa biểu</a></li>
             <li><a href="class_detail_page.html">điểm danh</a></li>
-            <li><a href="#">test</a></li>
         </ul>
         </nav>
+    </div>
+
+    <div class="class_detail_page_content" id="class_detail_page_content">
+        <form action="#" class="class_detail_page_class_form" id="class_detail_page_class_form">
+            <select name="classIdSelect" id="class_id_select">
+                <option value="" style="display:none">class id</option>
+                <option value="test2">test2</option>
+                <option value="test3">test3</option>
+            </select>
+            <select  id="class_session_select">
+                <option value="" style="display:none">session</option>
+                <option value="test2">test2</option>
+                <option value="test3">test3</option>
+            </select>
+            <button type="submit">xem</button>
+        </form>
+        <div class="grid_table" id="class_detail_page_stuView_table" style="grid-template-columns: auto auto auto;">
+                <div class="grid_item" style="text-transform: uppercase;">buổi</div>
+                <div class="grid_item" style="text-transform: uppercase;">điểm danh</div>
+                <div class="grid_item"style="text-transform: uppercase;"">thời gian</div>
+                <div class="grid_item">test</div>
+                <div class="grid_item">test</div>
+                <div class="grid_item">test</div>
+        </div>
+        <div id="class_detail_page_profView">
+            <div class="grid_table" id="class_detail_page_profView_table" style="grid-template-columns:auto auto auto auto;">
+                <div class="grid_item" style="text-transform: uppercase;">mã sinh viên</div>
+                <div class="grid_item" style="text-transform: uppercase;">tên sinh viên</div>
+                <div class="grid_item" style="text-transform: uppercase;">điểm danh</div>
+                <div class="grid_item" style="text-transform: uppercase;">thời gian</div>
+                <div class="grid_item">test</div>
+                <div class="grid_item">test</div>
+                <div class="grid_item">test</div>
+                <div class="grid_item">test</div>
+            </div>
+
+        </div>
     </div>
 </body>
 </html>

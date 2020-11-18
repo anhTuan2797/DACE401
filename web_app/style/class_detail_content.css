@@ -1,0 +1,33 @@
+.class_detail_page_content{
+    max-width: 1190px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.class_detail_page_class_form{
+    margin-top: 5px;
+    justify-self: start;
+}
+
+.class_detail_page_class_form select {
+    text-transform: uppercase;
+    font-size: 18px;
+    padding: 5px;
+    padding-right: 20px;
+    background-color: #4CAF50;
+    color: black;
+}
+
+.class_detail_page_class_form button {
+    border: none;
+    color: white;
+    background-color: #4CAF50;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px;
+    padding-bottom: 7px;
+    margin-bottom: 10px;
+}
+
