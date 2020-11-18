@@ -1,0 +1,12 @@
+.float_button{
+    position: fixed;
+    bottom: 60px;
+    right: 40px;
+    text-transform: uppercase;
+    background-color: #4CAF50;
+    border-radius: 50px;
+    border: none;
+    width: 60px;
+    height: 60px;
+    box-shadow: 2px 2px 2px #999;
+}
