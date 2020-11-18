@@ -1,0 +1,7 @@
+.grid_table{
+    display: grid;
+}
+.grid_item{
+    border: 1px solid black;
+    text-align: center;
+}

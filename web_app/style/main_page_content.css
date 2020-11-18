@@ -1,0 +1,20 @@
+
+.main_page_content{
+    max-width: 1190px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.main_page_content_user_info{
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+}
+
+.main_page_content_user_info h2{
+    margin: 12px;
+}
+.main_page_content_user_info p {
+    margin: 12px;
+}
