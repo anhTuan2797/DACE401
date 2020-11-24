@@ -19,12 +19,15 @@
     </div>
     
     <div class="page_content" id="admin_page_content">
-        <div class="admin_page_header" style="display:flex;">
-            <p style="text-transform: uppercase; font-size: 24px; margin-right: 5px; font-weight: bold;">student id:</p>
-            <p id="student_id" style="font-size: 24px;">test</p>
+        <div>
+            <form action="#" method="get" class="admin_student_form" id="admin_id_form">
+                <label>student id</label>
+                <input type="text">
+                <button type="submit" style="width: fit-content;">search</button>
+            </form>
         </div>
         
-    <form action="post" class="admin_student_form" id="admin_student_form">
+    <form action="#" method= "POST" class="admin_student_form" id="admin_student_form">
         <label>student name</label>
         <input type="text" id="studen_name" value="text">
         <label>student_sex</label>
@@ -50,7 +53,8 @@
 
         <label>student major</label>
         <input type="text" id="studen_major" value="text">
-
+        <p style="text-transform: uppercase;">fingerprint code</p>
+        <p id="student_fingerprint_code" style="padding: 12px 20px;">test</p>
         <button type="submit">submit</button>
     </form>
     </div>
