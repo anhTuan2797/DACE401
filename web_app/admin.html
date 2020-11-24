@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/page_header.css">
+    <link rel="stylesheet" href="style/page_content.css">
+    <link rel="stylesheet" href="style/admin_student_form.css">
+</head>
+<body>
+    <div class="page_header" id="main_page_header">
+        <a href="#" class="page_banner"><img src="https://daa.uit.edu.vn/sites/daa/files/banner.png" alt="main page banner" style="width: 100%; max-width: 100%; height: auto;"></a>
+        <nav class="page_navbar" id="main_page_navbar">
+        <ul class="page_navbar_link_list">
+            <li><a href="#">sinh viên</a></li>
+        </ul>
+        </nav>
+    </div>
+    
+    <div class="page_content" id="admin_page_content">
+        <div class="admin_page_header" style="display:flex;">
+            <p style="text-transform: uppercase; font-size: 24px; margin-right: 5px; font-weight: bold;">student id:</p>
+            <p id="student_id" style="font-size: 24px;">test</p>
+        </div>
+        
+    <form action="post" class="admin_student_form" id="admin_student_form">
+        <label>student name</label>
+        <input type="text" id="studen_name" value="text">
+        <label>student_sex</label>
+        <div>
+            <input type="radio" name="gender" id="male">
+            <label for="male">male</label>
+            <br>
+            <input type="radio" name="gender" id="female">
+            <label for="female">female</label>
+            <br>
+            <input type="radio" name="gender" id="other">
+            <label for="other">other</label>
+        </div>
+
+        <label>student birthday</label>
+        <input type="date" id="studen_birthday" value="2020-11-24">
+
+        <label>student mail</label>
+        <input type="email" id="studen_mail" value="text">
+
+        <label>student tel</label>
+        <input type="tel" id="studen_tel" value="0">
+
+        <label>student major</label>
+        <input type="text" id="studen_major" value="text">
+
+        <button type="submit">submit</button>
+    </form>
+    </div>
+
+</body>
+</html>

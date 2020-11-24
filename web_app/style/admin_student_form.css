@@ -1,0 +1,31 @@
+.admin_student_form{
+    display: grid;
+    grid-template-columns: 20% 20%;
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+
+.admin_student_form label {
+    text-transform: uppercase;
+}
+
+.admin_student_form input {
+    margin-bottom: 15px;
+}
+
+.admin_student_form input[type = text],
+.admin_student_form input[type = email],
+.admin_student_form input[type = tel],
+.admin_student_form input[type = date]
+{
+    padding: 12px 20px;
+    
+}
+
+.admin_student_form button {
+    grid-column: 2;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+}

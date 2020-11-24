@@ -1,0 +1,6 @@
+.page_content{
+    max-width: 1190px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto;
+}
