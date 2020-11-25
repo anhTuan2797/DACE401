@@ -4,8 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style/page_header.css">
+    <link rel="stylesheet" href="style/page_content.css">
+    <link rel="stylesheet" href="style/admin_form.css">
 </head>
 <body>
-    
+    <div class="page_header" id="main_page_header">
+        <a href="#" class="page_banner"><img src="https://daa.uit.edu.vn/sites/daa/files/banner.png" alt="main page banner" style="width: 100%; max-width: 100%; height: auto;"></a>
+        <nav class="page_navbar" id="main_page_navbar">
+        <ul class="page_navbar_link_list">
+            <li><a href="admin_adjust_student_info.html">sinh viên</a></li>
+            <li><a href="#">máy điểm danh</a></li>
+        </ul>
+        </nav>
+    </div>
+
+    <div class="page_content" id="admin_page_machine_content">
+        <form action="#" method="GET" class="admin_form" id="admin_machine_search_form">
+            <label>machine id</label>
+            <input type="text" id="machine_id">
+            <label>room</label>
+            <input type="text" id="machine_room">
+            <button type="submit">search</button>
+        </form>
+        <form action="#" method="post" id="admin_machine_adjust_form" class="admin_form" style="border: 1px solid black;">
+            <label> machine id</label>
+            <label id="machine_id_label">test</label>
+            <label>machine room</label>
+            <select name="roomSelect" id="admin_room_select">
+                <option value="" style="display: none;">room</option>
+                <option value="test1">test1</option>
+                <option value="test2">test2</option>
+            </select>
+            <button type="submit">submit</button>
+        </form>
+        <div style="border: 1px solid black; display: grid; grid-template-columns: 20% 20%;">
+            <h2 style="text-transform: uppercase;">reset password</h2>
+            <button disabled="disabled" 
+            style="background-color: #CC3300; color: black; border: none; cursor: pointer; margin: 15px;">
+            reset</button>
+        </div>
+    </div>
 </body>
 </html>
