@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style/grid_table.css">
     <link rel="stylesheet" href="style/page_content.css">
 </head>
-<body>
+<body onload="onload()">
     <div class="page_header" id="main_page_header">
         <a href="#" class="page_banner"><img src="https://daa.uit.edu.vn/sites/daa/files/banner.png" alt="main page banner" style="width: 100%; max-width: 100%; height: auto;"></a>
         <nav class="page_navbar" id="main_page_navbar">
@@ -22,12 +22,12 @@
 
     <div class="page_content" id="main_page_content">
         <div class="main_page_content_user_info" id="main_page_content_user_info">
+            <h2>id</h2>
+            <p id="userIdP">id user</p>
             <h2>Tên</h2>
             <p>tên user</p>
             <h2>Chức vụ</h2>
             <p>chức vụ của user</p>
-            <h2>test</h2>
-            <p>test</p>
         </div>
         <h2 style="text-transform: uppercase;">thời khóa biểu</h1>
         <div class="grid_table" id="main_page_content_user_timetable" style="grid-template-columns: auto auto auto auto auto auto auto;">
@@ -46,7 +46,32 @@
            <div class="grid_item" style="padding-bottom: 10px; padding-top: 10px">test test test test</div>
            <div class="grid_item" style="padding-bottom: 10px; padding-top: 10px">test test test test</div>
         </div>
-
     </div>
+    <script>
+        function onload(){
+            // console.log(getCookie('userId'));
+            var userId = getCookie('userId');
+            console.log(userId);
+            var userIdP = document.getElementById('userIdP');
+            // var text = document.createTextNode(userId);
+            userIdP.innerHTML = userId;
+        }
+
+        function getCookie(cname){
+            var name = cname + '=';
+            var decodedCookie = decodeURI(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i =0; i<ca.length;i++){
+                var c = ca[i];
+                while(c.charAt(0) == ''){
+                    c = c.substring(1);
+                }
+                if(c.indexOf(name) == 0){
+                    return c.substring(name.length,c.length);
+                }
+            }
+            return "";
+        }
+    </script>
 </body>
 </html>

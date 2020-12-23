@@ -9,54 +9,250 @@
     <link rel="stylesheet" href="style/grid_table.css">
     <link rel="stylesheet" href="style/print_button.css">
     <link rel="stylesheet" href="style/page_content.css">
+    <link rel="stylesheet" href="style/main_page_content.css">
 </head>
-<body>
+<body onload="onload()">
     <div class="page_header" id="main_page_header">
         <a href="#" class="page_banner"><img src="https://daa.uit.edu.vn/sites/daa/files/banner.png" alt="main page banner" style="width: 100%; max-width: 100%; height: auto;"></a>
         <nav class="page_navbar" id="main_page_navbar">
         <ul class="page_navbar_link_list">
-            <li><a href="main_page.html">thời khóa biểu</a></li>
-            <li><a href="class_detail_page.html">điểm danh</a></li>
+            <li><a href="/main">điểm danh</a></li>
+            <li><a href="javascript:logOut()">đăng xuất</a></li>
         </ul>
         </nav>
     </div>
 
     <div class="page_content" id="class_detail_page_content">
+        <div class="main_page_content_user_info" id="main_page_content_user_info">
+            <h2>id</h2>
+            <h2 id="userIdP" style="font-weight: normal;">id user</p>
+            <h2>Tên</h2>
+            <h2 id="userNameP" style="font-weight: normal;">tên user</h2>
+            <h2>Chức vụ</h2>
+            <h2 id="userJobP" style="font-weight: normal;">chức vụ của user</p>
+        </div>
         <form action="#" class="class_detail_page_class_form" id="class_detail_page_class_form">
             <select name="classIdSelect" id="class_id_select">
                 <option value="" style="display:none">class id</option>
-                <option value="test2">test2</option>
-                <option value="test3">test3</option>
             </select>
             <select  id="class_session_select">
                 <option value="" style="display:none">session</option>
-                <option value="test2">test2</option>
-                <option value="test3">test3</option>
             </select>
-            <button type="submit">xem</button>
+            <button type="button" style="cursor: pointer;" id="load_attendance_button">xem</button>
         </form>
-        <div class="grid_table" id="class_detail_page_stuView_table" style="grid-template-columns: auto auto auto;">
+        <div class="grid_table" id="class_detail_page_stuView_table" style="grid-template-columns: auto auto;">
                 <div class="grid_item" style="text-transform: uppercase;">buổi</div>
-                <div class="grid_item" style="text-transform: uppercase;">điểm danh</div>
-                <div class="grid_item"style="text-transform: uppercase;"">thời gian</div>
-                <div class="grid_item">test</div>
-                <div class="grid_item">test</div>
-                <div class="grid_item">test</div>
+                <div class="grid_item"style="text-transform: uppercase;"">thời gian điểm danh</div>
         </div>
-        <div id="class_detail_page_profView">
-            <div class="grid_table" id="class_detail_page_profView_table" style="grid-template-columns:auto auto auto auto;">
+
+        <div class="grid_table" id="class_detail_page_profView_table" style="grid-template-columns:auto auto auto;">
                 <div class="grid_item" style="text-transform: uppercase;">mã sinh viên</div>
                 <div class="grid_item" style="text-transform: uppercase;">tên sinh viên</div>
                 <div class="grid_item" style="text-transform: uppercase;">điểm danh</div>
-                <div class="grid_item" style="text-transform: uppercase;">thời gian</div>
-                <div class="grid_item">test</div>
-                <div class="grid_item">test</div>
-                <div class="grid_item">test</div>
-                <div class="grid_item">test</div>
-            </div>
         </div>
     </div>
 
     <button class="float_button" id="class_detail_print_button">in</button>
+
+    <script>
+        function onload(){
+            var userId = getCookie('userId');
+            var userIdP = document.getElementById('userIdP');
+            var userNameP = document.getElementById('userNameP');
+            var userJobP = document.getElementById('userJobP');
+            var loadAttendanceButton = document.getElementById('load_attendance_button');
+            var studentTable = document.getElementById('class_detail_page_stuView_table');
+            var profTable = document.getElementById('class_detail_page_profView_table');
+            var class_session_select = document.getElementById('class_session_select');
+            var classIdSelect = document.getElementById('class_id_select');
+            var xmlhttpUser = new XMLHttpRequest();
+            xmlhttpUser.onreadystatechange = ()=>{
+                if(xmlhttpUser.readyState == 4 && xmlhttpUser.status == 200){
+                    var user = JSON.parse(xmlhttpUser.responseText);
+                    userJobP.innerHTML = user.job;
+                    if(user.job == 'student'){
+                        userNameP.innerHTML = user.student_name;
+                        class_session_select.remove();
+                        profTable.remove();
+                        loadAttendanceButton.onclick = loadAttendanceStudent;
+                    }
+                    else if(user.job == 'teacher'){
+                        userNameP.innerHTML = user.teacher_name;
+                        studentTable.remove();
+                        classIdSelect.onchange = loadSession;
+                        loadAttendanceButton.onclick = loadAttendanceTeacher;
+                    }
+                    
+                    var xmlhttpClass = new XMLHttpRequest();
+                        xmlhttpClass.onreadystatechange = ()=>{
+                            if(xmlhttpClass.readyState == 4 && xmlhttpClass.status == 200){
+                                var classList = JSON.parse(xmlhttpClass.responseText);
+                                for(id in classList){
+                                    var option = document.createElement('option');
+                                    option.text = classList[id].class_id;
+                                    classIdSelect.add(option);
+                                }
+                            }
+                        };
+
+                        xmlhttpClass.open('GET','/getClass',true);
+                        xmlhttpClass.send();
+                }
+            };
+            xmlhttpUser.open("GET","/getUser",true);
+            xmlhttpUser.send();
+            userIdP.innerHTML = userId;
+        }
+
+        function getCookie(cname){
+            var name = cname + '=';
+            var decodedCookie = decodeURI(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i =0; i<ca.length;i++){
+                var c = ca[i];
+                while(c.charAt(0) == ''){
+                    c = c.substring(1);
+                }
+                if(c.indexOf(name) == 0){
+                    return c.substring(name.length,c.length);
+                }
+            }
+            return "";
+        }
+
+        function loadSession(){
+            var classId = document.getElementById('class_id_select').value;
+            var classSessionSelect = document.getElementById('class_session_select');
+            for(i in classSessionSelect){
+                classSessionSelect.remove(i);
+            }
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = ()=>{
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                    var sessionNameList = JSON.parse(xmlhttp.responseText);
+                    for(name in sessionNameList){
+                        var option = document.createElement('option');
+                        option.text = sessionNameList[name].session_id;
+                        classSessionSelect.add(option);
+                    }
+                }
+            };
+            xmlhttp.open('GET','/getSession',true);
+            xmlhttp.setRequestHeader("classId",classId);
+            xmlhttp.send();
+        }
+
+        function loadAttendanceStudent(){
+            var classId = document.getElementById('class_id_select').value;
+            if(classId){
+                var studentTable = document.getElementById('class_detail_page_stuView_table');
+                var length = studentTable.childElementCount;
+                for(var i =2; i < length;i++){
+                 studentTable.removeChild(studentTable.lastElementChild);
+                }
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = ()=>{
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                    var attendanceList = JSON.parse(xmlhttp.responseText);
+               
+                if(attendanceList){
+                 for(i in attendanceList){
+                    var node1 = document.createElement('div');
+                    var node2 = document.createElement('div');
+                    node1.classList.add('grid_item');
+                    node2.classList.add('grid_item');
+                    node1.innerHTML = attendanceList[i].session_id;
+                    if(attendanceList[i].attendance_time != 0){
+                        var h = Math.floor(attendanceList[i].attendance_time/3600).toString();
+                        var m = Math.floor((attendanceList[i].attendance_time-h*3600)/60).toString();
+                        var s = ((attendanceList[i].attendance_time-h*3600)%60).toString();
+                        node2.innerHTML =attendanceList[i].session_date + " " + h+":"+":"+m+":"+s;
+                    }
+                    else{
+                        node2.innerText = '';
+                    }
+                    studentTable.appendChild(node1);
+                    studentTable.appendChild(node2);
+                 }
+                }
+                else return;   
+                }
+            }
+                xmlhttp.open('GET','getAttendanceStudent',true);
+                xmlhttp.setRequestHeader('classId',classId);
+                xmlhttp.send();
+        }
+            else return;
+    }
+
+        function loadAttendanceTeacher(){
+            var classId = document.getElementById('class_id_select').value;
+            var sessionId = document.getElementById('class_session_select').value;
+            var teacherTable = document.getElementById('class_detail_page_profView_table');
+            var length = teacherTable.childElementCount;
+            for(var i = 3;i<length;i++){
+                teacherTable.removeChild(teacherTable.lastElementChild);
+            }
+            if(classId && sessionId) {
+            //todo:clear teacher table
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = ()=>{
+                    if(xmlhttp.status == 200 && xmlhttp.readyState == 4) {
+                        var attendanceList = JSON.parse(xmlhttp.responseText);
+                        if(attendanceList){
+                            for(i in attendanceList){
+                                var node1 = document.createElement('div');
+                                var node2 = document.createElement('div');
+                                var node3 = document.createElement('div');
+                                node1.classList.add('grid_item');
+                                node2.classList.add('grid_item');
+                                node3.classList.add('grid_item');
+
+                                node1.innerText = attendanceList[i].student_id;
+                                teacherTable.appendChild(node1);
+                                node2.innerText = attendanceList[i].student_name;
+                                teacherTable.appendChild(node2);
+
+                                if(attendanceList[i].attendance_time == 0){
+                                    node3.innerText = "";
+                                }
+                                else{
+                                    var h = Math.floor(attendanceList[i].attendance_time/3600).toString();
+                                    var m = Math.floor((attendanceList[i].attendance_time-h*3600)/60).toString();
+                                    var s = ((attendanceList[i].attendance_time-h*3600)%60).toString();
+                                    node3.innerText =attendanceList[i].session_date + " " + h+":"+":"+m+":"+s;
+                                }
+                                teacherTable.appendChild(node3);
+                            }
+                        }
+                    }
+                }
+                xmlhttp.open('GET','getAttendanceTeacher',true);
+                xmlhttp.setRequestHeader('classId',classId);
+                xmlhttp.setRequestHeader('sessionId',sessionId);
+                xmlhttp.send();
+            }
+            else {
+                return
+            }
+        }
+
+        function logOut(){
+            document.cookie = "userId=;expires = Sun,6 Apr 1997 00:27:08 UTC; path=/; "
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange= ()=>{
+                if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                    console.log("test");
+                    window.location.href = "http://localhost:3000"
+                }
+            }
+            xmlhttp.open('GET','logOut',true);
+            xmlhttp.send();
+        }
+
+        function test(){
+            console.log('test');
+        }
+    </script>
 </body>
 </html>
