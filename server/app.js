@@ -12,6 +12,9 @@ var usersRouter = require('./routes/users');
 const { send } = require('process');
 const { error } = require('console');
 const { json } = require('express');
+const fileUpLoad = require('express-fileupload');
+const cors = require('cors');
+const _ = require('lodash');
 
 var app = express();
 
@@ -288,4 +291,153 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.disable('etag');
+
 module.exports = app;
+
+
+// **admin app:
+
+var app_admin = express();
+
+// view engine setup
+app_admin.set('views', path.join(__dirname, 'views'));
+app_admin.set('view engine', 'jade');
+
+app_admin.use(logger('dev'));
+app_admin.use(express.json());
+app_admin.use(express.urlencoded({ extended: false }));
+app_admin.use(cookieParser());
+app_admin.use(express.static(path.join(__dirname, 'public','web_app')));
+
+app_admin.listen(3002, ()=>{
+  console.log("port 3002 started");
+});
+
+app_admin.get('/', function(req, res, next) {
+  res.sendFile(path.join(__dirname,'/public/web_app','admin_adjust_student_info.html'));
+});
+
+app_admin.get('/getStudent',function(req,res,next){
+  var studentId = req.header('studentId');
+  if(studentId){
+    console.log('get student message received');
+    console.log('studentId '+studentId);
+    connection.query('SELECT student_name,student_sex,student_birthday,student_mail,student_tel,student_major FROM student_tbl WHERE student_id = ?',[studentId],(error,results,field)=>{
+      if(error){
+        console.error(error);
+      }
+      else{
+        if(results.length > 0) {
+          var text = JSON.stringify(results);
+          res.status(200).send(text);
+        }
+        else {
+          res.status(404).send('cant find data');
+        }
+      }
+    });
+  }
+  else{
+    res.status(404).send('cant find student id');
+  }
+});
+
+app_admin.post('/saveStudentInfo',(req,res)=>{
+  var student = JSON.parse(req.header('studentInfo'));
+  if(student){
+    console.log('save student message received');
+    console.log('student id: ' + student.student_id);
+    connection.query('UPDATE student_tbl SET student_name = ?,student_sex = ?, student_birthday = ?, student_mail = ?, student_tel = ?, student_major = ? WHERE student_id = ?'
+    ,[student.student_name,student.student_sex,student.student_birthday,student.student_mail,student.student_tel,student.student_major,student.student_id],(error,results,field)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send('cant find data');
+        }
+        else{
+          res.status(200).send('save data success');
+        }
+    });
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+});
+
+app_admin.get('/getMachine',(req,res)=>{
+  var roomId = req.header('roomId');
+  if(roomId){
+    console.log('get machine message received');
+    console.log('roomId ' + roomId);
+    connection.query('SELECT machine_id FROM room_tbl WHERE room_id = ?',[roomId],(error,results,field)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send('cant find data');
+        }
+        else{
+          if(results.length > 0 ){
+            var text = JSON.stringify(results);
+            res.status(200).send(text);
+          }
+          else{
+           res.status(404).send('cant find data');
+          }
+        }
+    });
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+});
+
+app_admin.get('/getAllMachine',(req,res)=>{
+  console.log('get all machine message received');
+  connection.query('SELECT machine_id FROM machine_tbl',(error,results,field)=>{
+    if(error){
+      console.error(error);
+      res.status(404).send('cant find data');
+    }
+    else{
+      if(results.length > 0){
+        var text = JSON.stringify(results);
+        res.status(200).send(text);
+      }
+      else{
+        res.status(404).send('cant find data');
+      }
+    }
+  });
+});
+
+app_admin.post('/saveMachineRoom',(req,res)=>{
+  var roomId = req.header('roomId');
+  var machineId = req.header('machineId');
+  if(roomId && machineId){
+    console.log('save machine room message received');
+    console.log('room Id: ' + roomId);
+    console.log('machine Id: ' +machineId);
+    
+    connection.query('UPDATE room_tbl SET machine_id = ? WHERE room_id = ?',[machineId,roomId],(error,results,field)=>{
+      if(error){
+        console.error(error);
+        res.status(404).send('cant find data');
+      }
+      else{
+        connection.query('UPDATE room_tbl SET machine_id = \'notAssign\' WHERE machine_id = ? AND room_id <> ?',[machineId,roomId],(error,results,field)=>{
+          if(error){
+            console.error(error);
+            res.status(404).send('cant find data');
+          }
+          else{
+            res.status(200).send('change data success');
+          }
+        });
+      }
+    });
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+
+});
+

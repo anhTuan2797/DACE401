@@ -23,42 +23,120 @@
         <div>
             <form action="#" method="get" class="admin_form" id="admin_id_form">
                 <label>student id</label>
-                <input type="text">
-                <button type="submit" style="width: fit-content;">search</button>
+                <input type="text" id="student_id_input">
+                <button type="button" style="width: fit-content;" onclick='loadStudentInfo()'>search</button>
             </form>
         </div>
         
     <form action="#" method= "POST" class="admin_form" id="admin_student_form">
         <label>student name</label>
-        <input type="text" id="studen_name" value="text">
+        <input type="text" id="student_name">
         <label>student_sex</label>
         <div>
-            <input type="radio" name="gender" id="male">
+            <input type="radio" name="gender" id="MALE">
             <label for="male">male</label>
             <br>
-            <input type="radio" name="gender" id="female">
+            <input type="radio" name="gender" id="FEMALE">
             <label for="female">female</label>
             <br>
-            <input type="radio" name="gender" id="other">
+            <input type="radio" name="gender" id="OTHER">
             <label for="other">other</label>
         </div>
 
         <label>student birthday</label>
-        <input type="date" id="studen_birthday" value="2020-11-24">
+        <input type="date" id="student_birthday">
 
         <label>student mail</label>
-        <input type="email" id="studen_mail" value="text">
+        <input type="email" id="student_mail">
 
         <label>student tel</label>
-        <input type="tel" id="studen_tel" value="0">
+        <input type="tel" id="student_tel">
 
         <label>student major</label>
-        <input type="text" id="studen_major" value="text">
+        <input type="text" id="student_major">
+
         <p style="text-transform: uppercase;">fingerprint code</p>
         <p id="student_fingerprint_code" style="padding: 12px 20px;">test</p>
-        <button type="submit">submit</button>
+
+        <button type="button" onclick="saveStudentInfo()">submit</button>
+        <p id="status" style="color: #CC3300;"></p>
+
     </form>
     </div>
+<script>
+    function test(){
+        console.log('test');
+    }
 
+    function loadStudentInfo(){
+        var studentId = document.getElementById('student_id_input').value;
+        document.getElementById('status').innerText = "";
+        if(studentId){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = ()=>{
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                    var student = JSON.parse(xmlhttp.responseText)
+                    if(student){
+                        var studentNameInput = document.getElementById('student_name');
+                        var studentBirthdayInput = document.getElementById('student_birthday');
+                        var studentMail = document.getElementById('student_mail');
+                        var studentTel = document.getElementById('student_tel');
+                        var studentMajor = document.getElementById('student_major');
+
+                        studentNameInput.value = student[0].student_name;
+                        studentBirthdayInput.value = student[0].student_birthday;
+                        studentMail.value = student[0].student_mail;
+                        studentTel.value = student[0].student_tel;
+                        studentMajor.value = student[0].student_major;
+
+                        var studentSex = document.getElementById(student[0].student_sex);
+                        if(studentSex){
+                            studentSex.checked = true;
+                        }
+
+
+                    }
+                }
+            }
+            xmlhttp.open('GET','/getStudent',true);
+            xmlhttp.setRequestHeader("studentId",studentId);
+            xmlhttp.send();
+        }
+    }
+
+    function saveStudentInfo(){
+        var studentSexRadio = document.getElementsByName('gender');
+        var studentSex;
+        for(var i =0 ; i<studentSexRadio.length;i++){
+            if(studentSexRadio[i].checked){
+                studentSex = studentSexRadio[i];
+                break;
+            }
+        }
+
+        var student = {
+            student_id : document.getElementById('student_id_input').value,
+            student_name : document.getElementById('student_name').value,
+            student_sex :  studentSex.id,
+            student_mail :  document.getElementById('student_mail').value,
+            student_tel : document.getElementById('student_tel').value,
+            student_major : document.getElementById('student_major').value,
+            student_birthday : document.getElementById('student_birthday').value
+        };
+        var studentInfo = JSON.stringify(student);
+        var xmlhttp  = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = ()=>{
+            if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                document.getElementById('status').innerText = "save success";
+            }
+            else if(xmlhttp.readyState == 4) {
+                document.getElementById('status').innerText = "save fail";
+            }
+        }
+        xmlhttp.open('POST','/saveStudentInfo');
+        xmlhttp.setRequestHeader("studentInfo",studentInfo);
+        xmlhttp.send();
+    }
+</script>
 </body>
 </html>
