@@ -33,7 +33,8 @@ var connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'schooldb'
+    database: 'schooldb',
+    port: 3306
 });
 
 // connection.connect((error)=>{
@@ -323,7 +324,7 @@ app_admin.get('/getStudent',function(req,res,next){
   if(studentId){
     console.log('get student message received');
     console.log('studentId '+studentId);
-    connection.query('SELECT student_name,student_sex,student_birthday,student_mail,student_tel,student_major FROM student_tbl WHERE student_id = ?',[studentId],(error,results,field)=>{
+    connection.query('SELECT student_name,student_sex,student_birthday,student_mail,student_tel,student_major,student_fpLink FROM student_tbl WHERE student_id = ?',[studentId],(error,results,field)=>{
       if(error){
         console.error(error);
       }

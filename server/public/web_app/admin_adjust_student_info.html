@@ -56,7 +56,7 @@
         <input type="text" id="student_major">
 
         <p style="text-transform: uppercase;">fingerprint code</p>
-        <p id="student_fingerprint_code" style="padding: 12px 20px;">test</p>
+        <p id="student_fingerprint_code" style="padding: 12px 20px;">not assign</p>
 
         <button type="button" onclick="saveStudentInfo()">submit</button>
         <p id="status" style="color: #CC3300;"></p>
@@ -82,6 +82,7 @@
                         var studentMail = document.getElementById('student_mail');
                         var studentTel = document.getElementById('student_tel');
                         var studentMajor = document.getElementById('student_major');
+                        var studentFpLink = document.getElementById('student_fingerprint_code');
 
                         studentNameInput.value = student[0].student_name;
                         studentBirthdayInput.value = student[0].student_birthday;
@@ -89,11 +90,19 @@
                         studentTel.value = student[0].student_tel;
                         studentMajor.value = student[0].student_major;
 
+                        if(student[0].student_fpLink){
+                            studentFpLink.innerText = "assigned";
+                        }
+                        else{
+                            studentFpLink.innerText = "not assign";
+                        }
+
                         var studentSex = document.getElementById(student[0].student_sex);
                         if(studentSex){
                             studentSex.checked = true;
                         }
 
+                        
 
                     }
                 }
