@@ -23,12 +23,18 @@ def handle_client(addr,conn):
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
+            print(msg)
             if msg == DISCONNECT_MESSAGE:
                 connected = False
-            elif msg == SEND_IMAGE_MESSAGE:
-                print(f'{addr}: {msg}')
+            elif msg == SEND_IMAGE_MESSAGE:              
                 sendMessageToClient(RECEIVED_MESSAGE,conn)
-                receiveImage(conn)
+                msg_length = conn.recv(BUFFER_SIZE).decode(FORMAT)
+                if msg_length:
+                    msg_length = int(msg_length)
+                    msg = conn.recv(msg_length).decode(FORMAT)
+                    sendMessageToClient(SUCCESS_MESSAGE,conn)
+                    receiveImage(conn,msg)
+                # receiveImage(conn)
             else :
                sendMessageToClient(FAIL_MESSAGE,conn)
     conn.close()
@@ -41,8 +47,8 @@ def sendMessageToClient(msg,conn):
     conn.send(send_length)
     conn.send(message)
 
-def receiveImage(conn):
-    f = open('fingerPrint/test.png','wb')
+def receiveImage(conn,msg):
+    f = open('fingerPrint/'+msg,'wb')
     l= conn.recv(BUFFER_SIZE)
     while (l):
         print('receiving ...')
