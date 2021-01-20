@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/page_header.css">
+    <link rel="stylesheet" href="style/page_content.css">
+    <link rel="stylesheet" href="style/4x4_page_content.css">
+    <link rel="stylesheet" href="style/admin_form.css">
+    <link rel="stylesheet" href="style/grid_table.css">
+</head>
+<body>
+    <div class="page_header" id="main_page_header">
+        <a href="#" class="page_banner"><img src="https://daa.uit.edu.vn/sites/daa/files/banner.png" alt="main page banner" style="width: 100%; max-width: 100%; height: auto;"></a>
+        <nav class="page_navbar" id="main_page_navbar">
+        <ul class="page_navbar_link_list">
+            <li><a href="admin_adjust_student_info.html">sinh viên</a></li>
+            <li><a href="admin_attendance_machine_page.html">máy điểm danh</a></li>
+            <li><a href="#">lớp</a></li>
+        </ul>
+        </nav>
+    </div>
+    <div class="page_content">
+        <div class="FourByFour_page_content">
+            <form action="#" method="get" class="admin_form">
+                <label>class id</label>
+                <input type="text"  id="class_id">
+                <button type="button" onclick="loadClassStudent()">search</button>
+            </form>
+            <div class="grid_table" style="grid-template-columns: 50% 40% 10%; grid-row: 1 / span 2; grid-column: 2;" id="class_detail_tbl">
+                <div class="grid_item" style="text-transform: uppercase;">student id</div>
+                <div class="grid_item" style="text-transform: uppercase;">student name</div>
+                <div class="grid_item"></div>
+            </div>
+            <div>
+                <form action="#" method="POST" class="admin_form">
+                    <label>student id</label>
+                    <input type="text"  id="student_id">
+                    <button type="button" onclick="loadStudent()">search</button>
+                </form>
+                <div style="display: none; grid-template-columns: 20% 20%; background-color: #f2f2f2;" id="student_div">
+                    <p style="text-transform: uppercase; font-weight: bold;">student id</p>
+                    <p id="student_id_div">16521376</p>
+                    <p style="text-transform: uppercase; font-weight: bold;">name</p>
+                    <p id="student_name_div">nguyen anh tuan</p>
+                    <button type="button" style="background-color: #4CAF50; cursor: pointer; border: none; width: 60%; grid-column: 2;" id="add_student_button">add</button> 
+                </div>
+            </div>
+            <div id="classIdDiv" style="grid-column: 2; text-transform: uppercase;"></div>
+        </div>
+        <div>
+        </div>
+    </div>
+</body>
+<script>
+    function test() {
+        console.log('test');
+    }
+
+    function deleteStudentFromClass(studentId) {
+        var studentId = this.id;
+        var classId = document.getElementById('classIdDiv').innerText;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = ()=>{
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                loadClassStudent();
+            }
+        }
+        xmlhttp.open('POST','/deleteStudentFromClass');
+        xmlhttp.setRequestHeader('studentId',studentId);
+        xmlhttp.setRequestHeader('classId',classId);
+        xmlhttp.send();
+    }
+    function loadClassStudent() {
+        var classId = document.getElementById('class_id').value;
+        var table = document.getElementById('class_detail_tbl');
+        var length = table.childElementCount;
+        document.getElementById('classIdDiv').innerText = classId;
+        for(var i=3;i<length;i++){
+            table.removeChild(table.lastElementChild);
+        }
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = ()=>{
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                var studentList = JSON.parse(xmlhttp.responseText);
+                if(studentList){
+                    for(i in studentList){
+                        var node1 = document.createElement('div');
+                        var node2 = document.createElement('div');
+                        var node3 = document.createElement('button');
+                        
+
+                        node1.classList.add('grid_item');
+                        node2.classList.add('grid_item');
+                        node3.classList.add('grid_item');
+
+                        node3.id = studentList[i].student_id;
+                        node3.onclick = deleteStudentFromClass;
+                        node3.innerText = 'delete';
+                        node3.style.cursor = 'pointer';
+
+                        node1.innerText = studentList[i].student_id;
+                        node2.innerText = studentList[i].student_name;
+
+                        table.appendChild(node1);
+                        table.appendChild(node2);
+                        table.appendChild(node3)
+                    }
+                }
+            }
+        }
+        xmlhttp.open('GET','/getClassStudent',true);
+        xmlhttp.setRequestHeader('classId',classId);
+        xmlhttp.send();
+    }
+
+    function loadStudent() {
+        var studentId = document.getElementById('student_id').value;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = ()=>{
+            if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                var student = JSON.parse(xmlhttp.responseText);
+                if(student){
+                    var studentDiv = document.getElementById('student_div')
+                    var studentIdP = document.getElementById('student_id_div');
+                    var studentNameP = document.getElementById('student_name_div');
+                    var studentButton = document.getElementById('add_student_button');
+                    studentDiv.style.display = 'grid';
+                    studentIdP.innerText = studentId;
+                    studentNameP.innerText = student[0].student_name;
+                    studentButton.onclick = addStudentToClass;
+                }
+            }
+        }
+        xmlhttp.open('GET','/getStudent');
+        xmlhttp.setRequestHeader('studentId',studentId);
+        xmlhttp.send();
+    }
+
+    function addStudentToClass() {
+        var studentId = document.getElementById('student_id').value;
+        var classId = document.getElementById('class_id').value;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = ()=>{
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                loadClassStudent();
+            }
+        }
+        xmlhttp.open('POST','/addStudentToClass');
+        xmlhttp.setRequestHeader('studentId',studentId);
+        xmlhttp.setRequestHeader('classId',classId);
+        xmlhttp.send();
+    }
+
+</script>
+</html>

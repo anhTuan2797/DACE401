@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style/page_header.css">
     <link rel="stylesheet" href="style/page_content.css">
     <link rel="stylesheet" href="style/admin_form.css">
+    <link rel="stylesheet" href="style/4x4_page_content.css">
 </head>
 <body onload="onLoad()">
     <div class="page_header" id="main_page_header">
@@ -15,24 +16,45 @@
         <ul class="page_navbar_link_list">
             <li><a href="admin_adjust_student_info.html">sinh viên</a></li>
             <li><a href="#">máy điểm danh</a></li>
+            <li><a href="admin_adjust_class_info.html">lớp</a></li>
         </ul>
         </nav>
     </div>
 
     <div class="page_content" id="admin_page_machine_content">
-        <form action="#" method="GET" class="admin_form" id="admin_machine_search_form">
-            <label>room</label>
-            <input type="text" id="room_id">
-            <button type="button" onclick="loadMachine()">search</button>
-        </form>
-        <form action="#" method="post" id="admin_machine_adjust_form" class="admin_form" style="border: 1px solid black;">
-            <label> machine id</label>
-            <select name="machineSelect" id="admin_machine_select">
-                <option value="" style="display: none;">machine</option>
-            </select>
-            <button type="button" onclick="changeMachineRoom()">submit</button>
-        </form>
+        <div class="FourByFour_page_content">
+            
+            <form action="#" method="GET" class="admin_form" id="admin_machine_search_form" style="border-bottom: 1px solid black;">
+                <label>room</label>
+                <input type="text" id="room_id">
+                <button type="button" onclick="loadMachine()">search</button>
+            </form>
+
+            <form action="#" method="post" id="admin_machine_adjust_form" class="admin_form" style="grid-column: 1; grid-row: 2;">
+                <label> machine id</label>
+                <select name="machineSelect" id="admin_machine_select">
+                    <option value="" style="display: none;">machine</option>
+                </select>
+                <button type="button" onclick="changeMachineRoom()">submit</button>
+            </form>
+
+            <form action="#" method="GET" style="border-bottom: 1px solid;" class="admin_form">
+                <label>machine</label>
+                <select name="machineIPSelect" id="admin_machine_ip_select" onchange="loadMachineIp()" style="padding: 10px; ">
+                    <option value="" style="display: none;">machine</option>
+                </select>
+                <div style="grid-column: 2; padding: 12px 20px; border: none;"></div>
+            </form>
+
+            <form action="#" method="POST" class="admin_form" >
+                <label>ip</label>
+                <input type="text" id="admin_machine_ip">
+                 <button type="button" onclick="changeMachineIp()">search</button>
+            </form>
+           
+        </div>
         <p id="status" style="color: #CC3300;"></p>
+        
     </div>
 
     <script>
@@ -55,7 +77,8 @@
         }
 
         function onLoad(){
-            var roomSelect = document.getElementById('admin_machine_select')
+            var machineSelect = document.getElementById('admin_machine_select')
+            var machineIPSelect = document.getElementById('admin_machine_ip_select');
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = ()=>{
                 if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -64,7 +87,8 @@
                         var option = document.createElement('option');
                         if(machineList[id].machine_id!='notAssign'){
                             option.text = machineList[id].machine_id;
-                            roomSelect.add(option);
+                            machineSelect.add(option);
+                            machineIPSelect.add(option.cloneNode(true));
                         }
                     }
                 }
@@ -89,6 +113,41 @@
                 xmlhttp.setRequestHeader('machineId',machineId);
                 xmlhttp.send();
             }
+        }
+        
+        function loadMachineIp(){
+            var machineId = document.getElementById('admin_machine_ip_select').value;
+            console.log(machineId);
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = ()=>{
+                if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                    var machine = JSON.parse(xmlhttp.responseText);
+                    document.getElementById('admin_machine_ip').value = machine[0].machine_ip;
+                    document.getElementById('status').innerText = '';
+                }
+            }
+            xmlhttp.open('GET','/getMachineIp');
+            xmlhttp.setRequestHeader('machineId',machineId);
+            xmlhttp.send();
+        }
+
+        function changeMachineIp(){
+            var machineId = document.getElementById('admin_machine_ip_select').value;
+            var machineIp = document.getElementById('admin_machine_ip').value;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = ()=>{
+                if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                    document.getElementById('status').innerText = 'save success';
+                }
+            }
+            xmlhttp.open('POST','/changeMachineIp');
+            xmlhttp.setRequestHeader('machineId',machineId);
+            xmlhttp.setRequestHeader('machineIp',machineIp);
+            xmlhttp.send();
+        }
+
+        function test(){
+            console.log('test');
         }
 
     </script>

@@ -442,3 +442,118 @@ app_admin.post('/saveMachineRoom',(req,res)=>{
 
 });
 
+app_admin.get('/getMachineIp',(req,res)=>{
+  var machineId = req.header('machineId');
+  if(machineId){
+    console.log('get machine ip received');
+    console.log('machineId: ' + machineId);
+
+    connection.query('SELECT machine_ip from machine_tbl where machine_id = ?',[machineId],(error,results,fields)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send('database error');
+        }
+        else if(results.length > 0){
+          var text = JSON.stringify(results);
+          res.status(200).send(text);
+        }
+        else{
+          res.status(404).send('cant find data');
+        }
+    }); 
+  }
+  else{
+    res.status(404).send('cant find machine Id')
+  }
+});
+
+app_admin.post('/changeMachineIp',(req,res)=>{
+  var machineId = req.header('machineId');
+  var machineIp = req.header('machineIp');
+  if(machineId && machineIp){
+    console.log('change machine ip message received');
+    console.log('machineId: ' + machineId);
+    console.log('machineIp: ' + machineIp);
+
+    connection.query('UPDATE machine_tbl SET machine_ip = ? WHERE machine_id = ?',[machineIp,machineId],(error,results,field)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send('database error');
+        } 
+        else{
+          res.status(200).send('save success')
+        }
+    });
+  }
+  else{
+    res.status(404).send('cant receive message')
+  }
+});
+
+app_admin.get('/getClassStudent',(req,res)=>{
+  var classId = req.header('classId');
+  if(classId){
+    console.log('get class student message received');
+    console.log('classId: ' + classId);
+    connection.query('SELECT student_tbl.student_id, student_tbl.student_name FROM class_detail_tbl inner join student_tbl on student_tbl.student_id = class_detail_tbl.student_id WHERE class_id = ?',[classId],(error,results,fields)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send(error);
+        }
+        else if(results.length > 0){
+          var text = JSON.stringify(results);
+          res.status(200).send(text);
+        }
+        else{
+          res.status(404).send('cant find data in database');
+        }
+    });
+
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+});
+
+app_admin.post('/addStudentToClass',(req,res)=>{
+  var classId = req.header('classId');
+  var studentId = req.header('studentId');
+  if(classId && studentId){
+    console.log('add student to class message received');
+    console.log('student id: ' + studentId);
+    console.log('class id: ' + classId);
+
+    connection.query('INSERT INTO class_detail_tbl VALUES (?,?)',[classId,studentId],(error,results,fields)=>{
+      if(error){
+        console.error(error);
+        res.status(404).send(error);
+      }
+      else{
+        res.status(200).send('save success');
+      }
+    });
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+});
+
+app_admin.post('/deleteStudentFromClass',(req,res)=>{
+  var classId = req.header('classId');
+  var studentId = req.header('studentId');
+  if(classId && studentId){
+    console.log('delete student from class message received');
+    console.log('student id:' + studentId);
+    console.log('class id: ' +classId);
+
+    connection.query('DELETE FROM class_detail_tbl where student_id = ? AND class_id = ?',[studentId,classId],(error,results,fields)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send(error);
+        }
+        else{
+          res.status(200).send('delete success');
+        }
+    });
+  }
+});

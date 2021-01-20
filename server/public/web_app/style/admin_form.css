@@ -1,6 +1,6 @@
 .admin_form{
     display: grid;
-    grid-template-columns: 20% 20%;
+    grid-template-columns: 20% 40%;
     background-color: #f2f2f2;
     padding: 10px;
 }

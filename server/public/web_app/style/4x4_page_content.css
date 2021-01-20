@@ -1,0 +1,9 @@
+.FourByFour_page_content{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.FourByFour_page_content div {
+    border: 1px solid black;
+}
+
