@@ -15,8 +15,10 @@ const { json } = require('express');
 const fileUpLoad = require('express-fileupload');
 const cors = require('cors');
 const _ = require('lodash');
+const { LOADIPHLPAPI } = require('dns');
 
 var app = express();
+var fs = require('fs')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -276,6 +278,30 @@ app.get('/logOut',(req,res)=>{
   })
 });
 
+app.post('/addStudentToAttendance',(req,res)=>{
+  console.log('add student to attendance message received');
+
+  var studentId = req.header('studentId');
+  var classId = req.header('classId');
+  var sessionId = req.header('sessionId');
+  var attendanceTime = 0;
+
+  if(studentId && classId && sessionId){
+    connection.query('INSERT INTO attendance_tbl value(?,?,?,?)',[sessionId,classId,studentId,attendanceTime],(error,results,field)=>{
+      if (error) {
+        console.error(error);
+        res.status(404).send(error);
+      }
+      else{
+        res.status(200).send('data saved')
+      }
+    });
+  }
+  else{
+    res.status(404).send('cant find data');
+  }
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -353,6 +379,7 @@ app_admin.post('/saveStudentInfo',(req,res)=>{
     ,[student.student_name,student.student_sex,student.student_birthday,student.student_mail,student.student_tel,student.student_major,student.student_id],(error,results,field)=>{
         if(error){
           console.error(error);
+          console.log('test');
           res.status(404).send('cant find data');
         }
         else{
@@ -555,5 +582,43 @@ app_admin.post('/deleteStudentFromClass',(req,res)=>{
           res.status(200).send('delete success');
         }
     });
+  }
+});
+
+app_admin.post('/addSession',(req,res)=>{
+  var classId = req.header('classId');
+  var sessionId = parseInt(req.header('sessionId'));
+  var sessionDate = req.header('sessionDate');
+  var sessionRoom = req.header('sessionRoom');
+  var sessionTime = req.header('sessionTime');
+  if (classId && sessionId && sessionDate && sessionRoom && sessionTime){
+    console.log('add session message received');
+    console.log('classId: ' + classId);
+    console.log('sessionId: ' + sessionId);
+    console.log('sessionDate: ' + sessionDate);
+    console.log('sessionRoom: ' + sessionRoom);
+    console.log('sessionTime: ' + sessionTime);
+
+    connection.query('INSERT INTO session_tbl VALUES(?,?,?,?,?)',[sessionId,sessionDate,sessionRoom,classId,sessionTime],(error,result,fields)=>{
+        if(error){
+          console.error(error);
+          res.status(404).send(error);
+        }
+        else{
+          var dir = 'attendanceImage/' + classId + '/' +sessionId;
+          fs.mkdir(path.join(__dirname,dir),(error)=>{
+            if(error){
+              console.error(error);
+            }
+            else{
+              res.status(200).send('add success');
+            }
+          })
+        }
+    });
+
+  }
+  else{
+    res.status(404).send('cant find data')
   }
 });

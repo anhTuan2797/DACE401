@@ -35,15 +35,28 @@
             </div>
             <div>
                 <form action="#" method="POST" class="admin_form">
+                    <label>session</label>
+                    <input type="text"  id="session_id">
+                    <label>date</label>
+                    <input type="date"  id="session_date">
+                    <label>time</label>
+                    <input type="time"  id="session_time">
+                    <label>room</label>
+                    <input type="text"  id="session_room">
+                    <button type="button" onclick="addSession()">add</button>
+                </form>
+            </div>
+            <div>
+                <form action="#" method="POST" class="admin_form">
                     <label>student id</label>
                     <input type="text"  id="student_id">
                     <button type="button" onclick="loadStudent()">search</button>
                 </form>
                 <div style="display: none; grid-template-columns: 20% 20%; background-color: #f2f2f2;" id="student_div">
                     <p style="text-transform: uppercase; font-weight: bold;">student id</p>
-                    <p id="student_id_div">16521376</p>
+                    <p id="student_id_div"></p>
                     <p style="text-transform: uppercase; font-weight: bold;">name</p>
-                    <p id="student_name_div">nguyen anh tuan</p>
+                    <p id="student_name_div"></p>
                     <button type="button" style="background-color: #4CAF50; cursor: pointer; border: none; width: 60%; grid-column: 2;" id="add_student_button">add</button> 
                 </div>
             </div>
@@ -151,6 +164,36 @@
         xmlhttp.setRequestHeader('studentId',studentId);
         xmlhttp.setRequestHeader('classId',classId);
         xmlhttp.send();
+    }
+
+    function addSession() {
+        var sessionId = document.getElementById('session_id').value;
+        var sessionDate = document.getElementById('session_date').value;
+        var sessionTime = document.getElementById('session_time').value;
+        var sessionRoom = document.getElementById('session_room').value;
+        var classId = document.getElementById('class_id').value;
+
+        time = sessionTime.split(':');
+        time = parseInt(time[0])*3600 + parseInt(time[1])*60;
+
+        sDate = sessionDate.split('-');
+        sDate = sDate[1] + '/' + sDate[2] + '/' + sDate[0];
+
+        console.log(sDate);
+
+       var xmlhttp = new XMLHttpRequest();
+       xmlhttp.onreadystatechange = ()=>{
+        if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+                console.log('success');
+            }
+       }
+       xmlhttp.open('POST','/addSession');
+       xmlhttp.setRequestHeader('classId',classId);
+       xmlhttp.setRequestHeader('sessionId',sessionId);
+       xmlhttp.setRequestHeader('sessionDate',sDate);
+       xmlhttp.setRequestHeader('sessionRoom',sessionRoom);
+       xmlhttp.setRequestHeader('sessionTime',time);
+       xmlhttp.send();
     }
 
 </script>

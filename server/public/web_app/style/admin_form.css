@@ -14,6 +14,7 @@
 .admin_form input[type = email],
 .admin_form input[type = tel],
 .admin_form input[type = date],
+.admin_form input[type = time],
 .admin_form select
 {
     padding: 12px 20px;

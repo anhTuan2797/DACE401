@@ -4,7 +4,8 @@
     justify-self: start;
 }
 
-.class_detail_page_class_form select {
+.class_detail_page_class_form select
+ {
     text-transform: uppercase;
     font-size: 18px;
     padding: 5px;
@@ -12,6 +13,13 @@
     background-color: #4CAF50;
     color: black;
 }
+
+.class_detail_page_class_form input {
+    text-transform: uppercase;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
 
 .class_detail_page_class_form button {
     border: none;

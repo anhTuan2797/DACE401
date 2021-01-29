@@ -28,7 +28,7 @@
             <h2 id="userIdP" style="font-weight: normal;">id user</p>
             <h2>Name</h2>
             <h2 id="userNameP" style="font-weight: normal;">name user</h2>
-            <h2>Position</h2>
+            <h2>Job</h2>
             <h2 id="userJobP" style="font-weight: normal;">position user</p>
         </div>
         <form action="#" class="class_detail_page_class_form" id="class_detail_page_class_form">
@@ -39,7 +39,14 @@
                 <option value="" style="display:none">session</option>
             </select>
             <button type="button" style="cursor: pointer;" id="load_attendance_button">serch</button>
+
+            <input type="text"  id="student_id_input">
+            <button type="button" id="add_student_button">add</button>
+
+
         </form>
+
+
         <div class="grid_table" id="class_detail_page_stuView_table" style="grid-template-columns: auto auto;">
                 <div class="grid_item" style="text-transform: uppercase;">session</div>
                 <div class="grid_item"style="text-transform: uppercase;">time attendance</div>
@@ -65,6 +72,8 @@
             var profTable = document.getElementById('class_detail_page_profView_table');
             var class_session_select = document.getElementById('class_session_select');
             var classIdSelect = document.getElementById('class_id_select');
+            var student_id_input = document.getElementById('student_id_input');
+            var add_student_button = document.getElementById('add_student_button');
             var xmlhttpUser = new XMLHttpRequest();
             xmlhttpUser.onreadystatechange = ()=>{
                 if(xmlhttpUser.readyState == 4 && xmlhttpUser.status == 200){
@@ -74,6 +83,8 @@
                         userNameP.innerHTML = user.student_name;
                         class_session_select.remove();
                         profTable.remove();
+                        student_id_input.remove();
+                        add_student_button.remove();
                         loadAttendanceButton.onclick = loadAttendanceStudent;
                     }
                     else if(user.job == 'teacher'){
@@ -81,6 +92,7 @@
                         studentTable.remove();
                         classIdSelect.onchange = loadSession;
                         loadAttendanceButton.onclick = loadAttendanceTeacher;
+                        add_student_button.onclick = addStudentToAttendance
                     }
                     
                     var xmlhttpClass = new XMLHttpRequest();
@@ -121,6 +133,8 @@
         }
 
         function loadSession(){
+            var studentIdInput = document.getElementById('student_id_input');
+            studentIdInput.value = '';
             var classId = document.getElementById('class_id_select').value;
             var classSessionSelect = document.getElementById('class_session_select');
             for(i in classSessionSelect){
@@ -237,12 +251,29 @@
             }
         }
 
+        function addStudentToAttendance() {
+            // console.log('add student to attendance');
+            var student_id = document.getElementById('student_id_input').value;
+            var class_id = document.getElementById('class_id_select').value;
+            var session_id = document.getElementById('class_session_select').value;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = () =>{
+                if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                    loadAttendanceTeacher()
+                }
+            }
+            xmlhttp.open('POST','addStudentToAttendance');
+            xmlhttp.setRequestHeader('studentId',student_id);
+            xmlhttp.setRequestHeader('classId',class_id);
+            xmlhttp.setRequestHeader('sessionId',session_id);
+            xmlhttp.send();
+        }
+
         function logOut(){
             document.cookie = "userId=;expires = Sun,6 Apr 1997 00:27:08 UTC; path=/; "
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange= ()=>{
                 if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
-                    console.log("test");
                     window.history.go(-1);
                 }
             }
